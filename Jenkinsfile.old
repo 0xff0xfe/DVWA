@@ -24,7 +24,7 @@ pipeline {
     stage ('Source Composition Analysis') {
       steps {
          sh 'rm owasp* || true'
-         sh 'wget "https://raw.githubusercontent.com/0xff0xfe/webapp/master/owasp-dependency-check.sh" '
+         sh 'wget "https://raw.githubusercontent.com/0xff0xfe/DVWA/master/owasp-dependency-check.sh" '
          sh 'chmod +x owasp-dependency-check.sh'
          sh 'bash owasp-dependency-check.sh'
          sh 'cat /var/lib/jenkins/OWASP-Dependency-Check/reports/dependency-check-report.xml'
@@ -48,17 +48,10 @@ pipeline {
        }
     }
 
-  stage ('Deploy-To-Tomcat') {
-            steps {
-           sshagent(['tomcat']) {
-                sh 'scp -o StrictHostKeyChecking=no target/*.war ubuntu@13.54.170.0:~/apache-tomcat-9.0.95/webapps/webapp.war'
-              }      
-           }       
-    }
    stage ('DAST') {
       steps {
         sshagent(['zap']) {
-         sh 'ssh -o  StrictHostKeyChecking=no ubuntu@13.210.148.18 "docker run -t zaproxy/zap-stable zap-baseline.py -t http://13.54.170.0:8080/webapp/" || true'
+         sh 'ssh -o  StrictHostKeyChecking=no ubuntu@13.210.148.18 "docker run -t zaproxy/zap-stable zap-baseline.py -t http://52.63.18.143/index.php" || true'
         }
       }
     }
