@@ -4,15 +4,6 @@ pipeline {
     maven 'Maven'
   }
   stages {
-    stage ('Initialize') {
-      steps {
-        sh '''
-                    echo "PATH = ${PATH}"
-                    echo "M2_HOME = ${M2_HOME}"
-            ''' 
-      }
-    }
-
     stage ('Check-Git-Secrets') {
       steps {
         sh 'rm trufflehog || true'
@@ -20,40 +11,5 @@ pipeline {
         sh 'cat trufflehog'
       }
     }  
-
-    stage ('Source Composition Analysis') {
-      steps {
-         sh 'rm owasp* || true'
-         sh 'wget "https://raw.githubusercontent.com/0xff0xfe/DVWA/master/owasp-dependency-check.sh" '
-         sh 'chmod +x owasp-dependency-check.sh'
-         sh 'bash owasp-dependency-check.sh'
-         sh 'cat /var/lib/jenkins/OWASP-Dependency-Check/reports/dependency-check-report.xml'
-        
-      }
-    }
-
-  stage ('SAST1') {
-      steps {
-        withSonarQubeEnv('Sonarqube') {
-          sh 'mvn sonar:sonar'
-          sh 'cat target/sonar/report-task.txt'
-        }
-      }
-    }
-
-
-    stage ('Build') {
-      steps {
-      sh 'mvn clean package'
-       }
-    }
-
-   stage ('DAST') {
-      steps {
-        sshagent(['zap']) {
-         sh 'ssh -o  StrictHostKeyChecking=no ubuntu@13.210.148.18 "docker run -t zaproxy/zap-stable zap-baseline.py -t http://52.63.18.143/index.php" || true'
-        }
-      }
-    }
   }
 }
