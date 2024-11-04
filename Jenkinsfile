@@ -1,8 +1,4 @@
 pipeline {
-  agent any 
-  tools {
-    maven 'Maven'
-  }
   stages {
     stage ('Check-Git-Secrets') {
       steps {
