@@ -14,7 +14,7 @@ pipeline {
                     -o "./" 
                     -s "./"
                     -f "ALL" 
-                    --prettyPrint''', odcInstallation: 'DVWA-DP-Check/depencency-check'
+                    --prettyPrint''', odcInstallation: 'DVWA-DP-Check'
 
                 dependencyCheckPublisher pattern: 'dependency-check-report.xml'
             }
