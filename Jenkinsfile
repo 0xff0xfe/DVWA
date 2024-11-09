@@ -18,6 +18,15 @@ pipeline {
 
                 dependencyCheckPublisher pattern: 'dependency-check-report.xml'
             }
-      }  
+      }
+    stages {
+        stage('DefectDojoPublisher') {
+            steps {
+                withCredentials([string(credentialsId: 'Defect_Dojo_API_Key', variable: 'API_KEY')]) {
+                    defectDojoPublisher(artifact: 'target/dependency-check-report.xml', productName: 'Jenkins-CICD', scanType: 'Dependency Check Scan', engagementName: 'DefectDojo-CICD', defectDojoCredentialsId: API_KEY, sourceCodeUrl: 'https://github.com/0xff0xfe/DVWA.git', branchTag: 'master')
+                }
+            }
+        }
+    }
   }
 }
