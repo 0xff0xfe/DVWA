@@ -19,17 +19,15 @@ pipeline {
                 dependencyCheckPublisher pattern: 'dependency-check-report.xml'
             }
       }
-    stage('SonarQube analysis') {
+     stage ('SAST') {
         steps {
-          script {
-              scannerHome = tool 'Sonarqube'// must match the name of an actual scanner installation directory on your Jenkins build agent
-          }
-          withSonarQubeEnv(credentialsId: 'sonar-qube-token', installationName: 'Sonarqube') {// If you have configured more than one global server connection, you can specify its name as configured in Jenkins
-            sh "${scannerHome}/bin/sonar-scanner"
-            sh "${scannerCmd} -Dsonar.projectKey=Sonarqube -Dsonar.sources=./ -Dsonar.host.url=http://localhost:9000 -Dsonar.login=${SONAR_TOKEN} -Dsonar.java.binaries=./"
+          withSonarQubeEnv('Sonarqube') {
+            sh 'mvn sonar:sonar'
+            sh 'cat target/sonar/report-task.txt'
           }
         }
       }
+
     stage('DefectDojoPublisher') {
         steps {
             withCredentials([string(credentialsId: 'Defect_Dojo_API_Key', variable: 'Defect_Dojo_API_Key')]) {
