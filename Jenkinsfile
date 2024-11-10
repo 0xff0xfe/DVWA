@@ -19,13 +19,13 @@ pipeline {
                 dependencyCheckPublisher pattern: 'dependency-check-report.xml'
             }
       }
-   stage(‘SonarQube Analysis’) {
+   stage('SonarQube Analysis') {
             steps {
                 script {
                     withSonarQubeEnv(‘Sonarqube’) {
-                        def scannerHome = tool name: ‘Sonarqube’, type: ‘hudson.plugins.sonar.SonarRunnerInstallation’
-                        def scannerCmd = “${scannerHome}/bin/sonar-scanner”
-                        sh “${scannerCmd} -Dsonar.projectKey=ProjectName -Dsonar.sources=./ -Dsonar.host.url=Sonarqubelink -Dsonar.login=${SONAR_TOKEN} -Dsonar.java.binaries=./”
+                        def scannerHome = tool name: 'Sonarqube', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
+                        def scannerCmd = "${scannerHome}/bin/sonar-scanner"
+                        sh "${scannerCmd} -Dsonar.projectKey=ProjectName -Dsonar.sources=./ -Dsonar.host.url=Sonarqubelink -Dsonar.login=${SONAR_TOKEN} -Dsonar.java.binaries=./"
             }
          }
       }
