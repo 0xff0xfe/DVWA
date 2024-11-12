@@ -27,7 +27,7 @@ pipeline {
         }
         withSonarQubeEnv(credentialsId: 'DVWA-SonarQubeScan', installationName: 'Sonarqube') {// If you have configured more than one global server connection, you can specify its name as configured in Jenkins
           sh "${scannerHome}/bin/sonar-scanner"
-          sh "${scannerCmd} -Dsonar.projectKey=sqp_621d722aa72a3909b0ebc893200e5dfb377aff4d -Dsonar.sources=./ -Dsonar.host.url=http://localhost:9000 -Dsonar.login=${SONAR_TOKEN} -Dsonar.java.binaries=./ "
+          sh "${scannerCmd} -Dsonar.projectKey=DVWA-SonarQubeScan -Dsonar.sources=./ -Dsonar.host.url=http://localhost:9000 -Dsonar.login=${SONAR_TOKEN} -Dsonar.java.binaries=./ "
         }
       }
     }
