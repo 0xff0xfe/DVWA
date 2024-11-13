@@ -21,14 +21,7 @@ pipeline {
       }
      stage('SonarQube analysis') {
       steps {
-        script {
-            scannerHome = tool 'Sonarqube'// must match the name of an actual scanner installation directory on your Jenkins build agent
-            scannerCmd = "${scannerHome}/bin/sonar-scanner"
-        }
-        withSonarQubeEnv(credentialsId: 'DVWA-SonarQubeScan', installationName: 'Sonarqube') {// If you have configured more than one global server connection, you can specify its name as configured in Jenkins
-          sh "${scannerHome}/bin/sonar-scanner"
-          sh "${scannerCmd} -Dsonar.projectKey=DVWA-SonarQubeScan -Dsonar.sources=./ -Dsonar.host.url=http://localhost:9000 -Dsonar.login=${SONAR_TOKEN} -Dsonar.java.binaries=./ "
-        }
+          sh "sonar-scanner -Dsonar.projectKey=DVWA-SonarQubeScan -Dsonar.sources=. -Dsonar.host.url=http://localhost:9000 -Dsonar.token=sqp_168782ad896422a8577399a1821eba74e9a02e17"
       }
     }
     stage('DefectDojoPublisher') {
