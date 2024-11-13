@@ -21,7 +21,7 @@ pipeline {
       }
      stage('SonarQube analysis') {
       steps {
-          sh "sonar-scanner -Dsonar.projectKey=DVWA-SonarQubeScan -Dsonar.sources=. -Dsonar.host.url=http://localhost:9000 -Dsonar.token=sqp_168782ad896422a8577399a1821eba74e9a02e17"
+          sh "sonar-scanner -Dsonar.projectKey=DVWA-SonarQubeScan -Dsonar.sources=. -Dsonar.host.url=http://52.62.57.177:9000 -Dsonar.token=sqp_168782ad896422a8577399a1821eba74e9a02e17"
       }
     }
     stage('DefectDojoPublisher') {
