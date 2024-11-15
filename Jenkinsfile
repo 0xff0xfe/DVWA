@@ -22,9 +22,7 @@ pipeline {
      stage('SonarQube analysis') {
       steps {
         script{
-          docker.image('sonarsource/sonar-scanner-cli:latest').inside{
-             sh "sonar-scanner -Dsonar.projectKey=DVWA-SonarQubeScan -Dsonar.sources=. -Dsonar.host.url=http://10.0.5.69:9000 -Dsonar.token=sqp_168782ad896422a8577399a1821eba74e9a02e17"
-          }
+             sh "docker run sonarsource/sonar-scanner-cli -X -Dsonar.projectKey=DVWA-SonarQubeScan -Dsonar.sources=. -Dsonar.host.url=http://10.0.5.69:9000 -Dsonar.token=sqp_168782ad896422a8577399a1821eba74e9a02e17"
         }
       }
     }
