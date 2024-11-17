@@ -21,8 +21,8 @@ pipeline {
       }
      stage('SonarQube analysis') {
       steps {
-        withSonarQubeEnv(credentialsId: 'DVWA-SonarQubeScan', installationName:'Sonarqube'){
-             sh "docker run sonarsource/sonar-scanner-cli -X -Dsonar.source=./dvwa -Dsonar.projectKey=DVWA-SonarQubeScan -Dsonar.host.url=http://10.0.5.69:9000"
+        withSonarQubeEnv(credentialsId: 'DVWA-SonarQubeScan', variable: 'SONAR_TOKEN', installationName:'Sonarqube'){
+             sh "docker run sonarsource/sonar-scanner-cli -X -Dsonar.source=./dvwa -Dsonar.projectKey=DVWA-SonarQubeScan -Dsonar.host.url=http://10.0.5.69:9000 -Dsonar.token=$SONAR_TOKEN"
              sh "cat target/sonar/report-task.txt"
         }
       }
