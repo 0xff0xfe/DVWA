@@ -25,7 +25,6 @@ pipeline {
             script {
                 def SONAR_REPORT_FILE = "./.jsonfile"
                 sh "docker run --rm -v ${WORKSPACE}:/usr/src -e SONAR_TOKEN=${SONAR_AUTH_TOKEN} sonarsource/sonar-scanner-cli -Dsonar.sources=./dvwa -Dsonar.projectKey=DVWA-SonarQubeScan -Dsonar.host.url=http://10.0.5.69:9000" 
-                sh "curl -u SONAR_TOKEN:\"http://10.0.5.69:9000\" -o ${SONAR_REPORT_FILE}"
             }
         }
       }
