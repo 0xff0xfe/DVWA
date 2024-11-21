@@ -46,7 +46,7 @@ pipeline {
                   curl -X POST \\
                     '${defectDojoUrl}' \\
                     -H 'accept: application/json' \\
-                    -H 'Authorization: Token ${API_KEY}' \\
+                    -H 'Authorization: Token ${Defect_Dojo_API_Key}' \\
                     -H 'Content-Type: multipart/form-data' \\
                     -F 'test=${testId}' \\
                     -F 'file=@${SONAR_REPORT_FILE};type=application/json' \\
