@@ -23,7 +23,7 @@ pipeline {
         steps {
             withCredentials([string(credentialsId: 'Defect_Dojo_API_Key', variable: 'Defect_Dojo_API_Key')]) {
                 script{
-                  def defectDojoUrl = '10.0.5.69:9000/api/v2/import-scan/'  // Replace with your DefectDojo URL
+                  def defectDojoUrl = 'http://10.0.5.69:9000/api/v2/import-scan/'  // Replace with your DefectDojo URL
                   def testId = '3'  // Replace with the correct test ID
                   def scanType = 'SonarQube Scan'
                   def SONAR_REPORT_FILE = "./sonarqube-report.json"
