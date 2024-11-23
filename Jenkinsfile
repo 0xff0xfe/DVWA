@@ -30,7 +30,7 @@ pipeline {
               
                   sh """
   
-                  curl -X POST \\
+                  curl -i -X POST \\
                     '${defectDojoUrl}' \\
                     -H 'accept: application/json' \\
                     -H 'Authorization: Token ${Defect_Dojo_API_Key}' \\
