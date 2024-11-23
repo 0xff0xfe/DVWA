@@ -8,18 +8,7 @@ pipeline {
         sh 'cat trufflehog'
       }
     }
-    stage ('OWASP Dependency-Check Vulnerabilities') {
-            steps {
-                dependencyCheck additionalArguments: ''' 
-                    -o "./" 
-                    -s "./"
-                    -f "ALL" 
-                    --prettyPrint''', odcInstallation: 'DVWA-DP-Check'
-
-                dependencyCheckPublisher pattern: 'dependency-check-report.xml'
-            }
-      }
-     stage('SonarQube analysis') {
+    stage('SonarQube analysis') {
       steps {
         withSonarQubeEnv(credentialsId: 'DVWA-SonarQubeScan', installationName: 'Sonarqube') {
             script {
@@ -34,8 +23,6 @@ pipeline {
         steps {
             withCredentials([string(credentialsId: 'Defect_Dojo_API_Key', variable: 'Defect_Dojo_API_Key')]) {
                 script{
-
-                  defectDojoPublisher(artifact: 'dependency-check-report.xml', productName: 'Jenkins-CICD', scanType: 'Dependency Check Scan', engagementName: 'DefectDojo-CICD', defectDojoCredentialsId: 'Defect_Dojo_API_Key', sourceCodeUrl: 'https://github.com/0xff0xfe/DVWA.git', branchTag: 'master')
                   def defectDojoUrl = '10.0.5.69:9000'  // Replace with your DefectDojo URL
                   def testId = '3'  // Replace with the correct test ID
                   def scanType = 'SonarQube Scan'
