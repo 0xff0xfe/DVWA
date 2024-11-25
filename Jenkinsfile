@@ -25,7 +25,9 @@ pipeline {
                 script{
                   def currentDate = new Date().format("yyyy-MM-dd")
                   def defectDojoUrl = "http://10.0.5.69:8555/api/v2/import-scan/"  // Replace with your DefectDojo URL
+                  def productName = "Jenkins-CICD"
                   def engagementName = "LocalTesting3"  // Replace with an engagement name
+                  def descName = "Created by automated script"
                   def scanType = "SonarQube API Import"
                   def SONAR_REPORT_FILE = "/var/lib/jenkins/workspace/webapp-cicd-pipeline/sonarqube-report.json"
                   
@@ -37,10 +39,10 @@ pipeline {
                       -F "verified=False" \\
                       -F "active=True" \\
                       -F "minimum_severity=Info" \\
-                      -F "description=Created by automated script" \\
+                      -F "description=${descName}" \\
                       -F "auto_create_context=True" \\
                       -F "deduplication_on_engagement=True" \\
-                      -F "product_name=Jenkins-CICD" \\
+                      -F "product_name=${productName}" \\
                       -F "engagement_name=${engagementName}" \\
                       -F "file=@${SONAR_REPORT_FILE};type=application/json" \\
                 """
