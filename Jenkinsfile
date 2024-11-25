@@ -25,7 +25,7 @@ pipeline {
                 script{
                   def currentDate = new Date().format("yyyy-MM-dd")
                   def defectDojoUrl = 'http://10.0.5.69:8555/api/v2/import-scan/'  // Replace with your DefectDojo URL
-                  def engagementName = 'SonarQube Scan Result'  // Replace with an engagement name
+                  def engagementName = 'LocalTesting3'  // Replace with an engagement name
                   def scanType = 'SonarQube API Import'
                   def SONAR_REPORT_FILE = "./sonarqube-report.json"
                   
