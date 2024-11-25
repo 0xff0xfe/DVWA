@@ -23,22 +23,29 @@ pipeline {
         steps {
             withCredentials([string(credentialsId: 'Defect_Dojo_API_Key', variable: 'Defect_Dojo_API_Key')]) {
                 script{
+                  def currentDate = new Date().format("yyyy-MM-dd")
                   def defectDojoUrl = 'http://10.0.5.69:8555/api/v2/import-scan/'  // Replace with your DefectDojo URL
-                  def testId = '3'  // Replace with the correct test ID
-                  def scanType = 'SonarQube Scan'
+                  def engagementName = 'SonarQube Scan Result'  // Replace with an engagement name
+                  def scanType = 'SonarQube API Import'
                   def SONAR_REPORT_FILE = "./sonarqube-report.json"
-              
+                  
                   sh """
   
                   curl -i -X POST \\
                     '${defectDojoUrl}' \\
-                    -H 'accept: application/json' \\
                     -H 'Authorization: Token ${Defect_Dojo_API_Key}' \\
-                    -H 'Content-Type: multipart/form-data' \\
-                    -F 'test=${testId}' \\
-                    -F 'file=@${SONAR_REPORT_FILE};type=application/json' \\
+                    -F 'scan_date=currentDate'
                     -F 'scan_type=${scanType}' \\
-  
+                    -F 'engagement_name=${engagementName}' \\
+                    -F 'verified=False' \\
+                    -F 'active=True' \\
+                    -F 'minimum_severity=Info' \\
+                    -F 'description=Created by automated script' \\
+                    -F 'auto_create_context=True' \\
+                    -F 'deduplication_on_engagement=True' \\
+                    -F 'product_name=Jenkins-CICD' \\
+                    -F 'file=@${SONAR_REPORT_FILE};type=application/json' \\
+                  
                   """
                 }
             }
