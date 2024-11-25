@@ -29,7 +29,7 @@ pipeline {
                   def scanType = 'SonarQube API Import'
                   def SONAR_REPORT_FILE = "/var/lib/jenkins/workspace/webapp-cicd-pipeline/sonarqube-report.json"
                   
-                  curl -i -v -X POST "${defectDojoUrl}" -H "Authorization: Token ${Defect_Dojo_API_Key}" -F "scan_date=${currentDate}" -F "scan_type=${scanType}" -F "verified=False" -F "active=True" -F "minimum_severity=Info" -F "description=Created by automated script" -F "auto_create_context=True" -F "deduplication_on_engagement=True" -F "product_name=Jenkins-CICD" -F "engagement_name=${engagementName}" -F file=@${SONAR_REPORT_FILE};type=application/json
+                  curl -i -v -X POST "${defectDojoUrl}" -H "Authorization: Token ${Defect_Dojo_API_Key}" -F "scan_date=${currentDate}" -F "scan_type=${scanType}" -F "verified=False" -F "active=True" -F "minimum_severity=Info" -F "description=Created by automated script" -F "auto_create_context=True" -F "deduplication_on_engagement=True" -F "product_name=Jenkins-CICD" -F "engagement_name=${engagementName}" -F "file=@${SONAR_REPORT_FILE};type=application/json"
                 }
             }
         }
