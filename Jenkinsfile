@@ -27,7 +27,7 @@ pipeline {
                   def defectDojoUrl = 'http://10.0.5.69:8555/api/v2/import-scan/'  // Replace with your DefectDojo URL
                   def engagementName = 'LocalTesting3'  // Replace with an engagement name
                   def scanType = 'SonarQube API Import'
-                  def SONAR_REPORT_FILE = "./sonarqube-report.json"
+                  def SONAR_REPORT_FILE = "/var/lib/jenkins/workspace/webapp-cicd-pipeline/sonarqube-report.json"
                   
                   sh """
   
@@ -35,6 +35,8 @@ pipeline {
                     '${defectDojoUrl}' \\
                     -H 'Authorization: Token ${Defect_Dojo_API_Key}' \\
                     -F 'scan_date=currentDate'
+                    -F 'product_name=Jenkins-CICD' \\
+                    -F 'engagement_name=${engagementName}' \\
                     -F 'scan_type=${scanType}' \\
                     -F 'verified=False' \\
                     -F 'active=True' \\
@@ -42,8 +44,6 @@ pipeline {
                     -F 'description=Created by automated script' \\
                     -F 'auto_create_context=True' \\
                     -F 'deduplication_on_engagement=True' \\
-                    -F 'product_name=Jenkins-CICD' \\
-                    -F 'engagement_name=${engagementName}' \\
                     -F 'file=@${SONAR_REPORT_FILE};type=application/json' \\
                   
                   """
