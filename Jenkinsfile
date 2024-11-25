@@ -43,3 +43,9 @@ pipeline {
                       -F "engagement_name=${engagementName}" \\
                       -F "file=@${SONAR_REPORT_FILE};type=application/json" \\
                 """
+                }
+            }
+        }
+    }
+  }
+}
