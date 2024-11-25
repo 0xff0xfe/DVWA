@@ -35,9 +35,9 @@ pipeline {
                     '${defectDojoUrl}' \\
                     -H 'Authorization: Token ${Defect_Dojo_API_Key}' \\
                     -F 'product_name=Jenkins-CICD' \\
+                    -F 'engagement_name=${engagementName}' \\
                     -F 'scan_date=currentDate'
                     -F 'scan_type=${scanType}' \\
-                    -F 'engagement_name=${engagementName}' \\
                     -F 'verified=False' \\
                     -F 'active=True' \\
                     -F 'minimum_severity=Info' \\
