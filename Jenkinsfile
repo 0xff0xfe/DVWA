@@ -24,10 +24,11 @@ pipeline {
             withCredentials([string(credentialsId: 'Defect_Dojo_API_Key', variable: 'Defect_Dojo_API_Key')]) {
                 script{
                   def currentDate = new Date().format("yyyy-MM-dd")
-                  def defectDojoUrl = 'http://10.0.5.69:8555/api/v2/import-scan/'  // Replace with your DefectDojo URL
-                  def engagementName = 'LocalTesting3'  // Replace with an engagement name
-                  def scanType = 'SonarQube API Import'
+                  def defectDojoUrl = "http://10.0.5.69:8555/api/v2/import-scan/"  // Replace with your DefectDojo URL
+                  def engagementName = "LocalTesting3"  // Replace with an engagement name
+                  def scanType = "SonarQube API Import"
                   def SONAR_REPORT_FILE = "/var/lib/jenkins/workspace/webapp-cicd-pipeline/sonarqube-report.json"
+                  
                   sh """
                     curl -i -v -X POST "${defectDojoUrl}" \\
                       -H "Authorization: Token ${Defect_Dojo_API_Key}" \\
