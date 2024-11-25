@@ -36,6 +36,7 @@ pipeline {
                     -H 'Authorization: Token ${Defect_Dojo_API_Key}' \\
                     -F 'scan_date=currentDate'
                     -F 'scan_type=${scanType}' \\
+                    -F 'product_name=Jenkins-CICD' \\
                     -F 'engagement_name=${engagementName}' \\
                     -F 'verified=False' \\
                     -F 'active=True' \\
@@ -43,7 +44,6 @@ pipeline {
                     -F 'description=Created by automated script' \\
                     -F 'auto_create_context=True' \\
                     -F 'deduplication_on_engagement=True' \\
-                    -F 'product_name=Jenkins-CICD' \\
                     -F 'file=@${SONAR_REPORT_FILE};type=application/json' \\
                   
                   """
