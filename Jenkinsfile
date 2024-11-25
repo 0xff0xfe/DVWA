@@ -34,9 +34,9 @@ pipeline {
                   curl -i -X POST \\
                     '${defectDojoUrl}' \\
                     -H 'Authorization: Token ${Defect_Dojo_API_Key}' \\
+                    -F 'product_name=Jenkins-CICD' \\
                     -F 'scan_date=currentDate'
                     -F 'scan_type=${scanType}' \\
-                    -F 'product_name=Jenkins-CICD' \\
                     -F 'engagement_name=${engagementName}' \\
                     -F 'verified=False' \\
                     -F 'active=True' \\
