@@ -1,5 +1,12 @@
 pipeline {
   agent any
+  environment {
+        // Define ZAP remote server details
+        REMOTE_SERVER = 'ubuntu@3.27.140.228'
+        REMOTE_PATH = './2024-11-28-ZAP-Report-3.106.223.79.xml'
+        LOCAL_PATH = './2024-11-28-ZAP-Report-3.106.223.79.xml'
+  }
+  
   stages {
     stage ('Check-Git-Secrets') {
       steps {
@@ -19,9 +26,25 @@ pipeline {
         }
       }
     }
+
+    
+    stage ('DAST') {
+      steps {
+        sshagent(['zap']) {
+         sh 'ssh -o  StrictHostKeyChecking=no ubuntu@3.27.140.228 "docker container run -d -v $(pwd):/zap/wrk/:rw -t zaproxy/zap-weekly zap.sh -cmd -autorun /zap/wrk/FullScanDvwaAuth.yaml" || true'
+        }
+      }
+    }
+
     stage('DefectDojoPublisher') {
         steps {
+            sshagent(credentials: ['zap']) {
+                // Run the scp command to retrieve the file
+                sh "scp ${REMOTE_SERVER}:${REMOTE_PATH} ${LOCAL_PATH}"
+            }
+              
             withCredentials([string(credentialsId: 'Defect_Dojo_API_Key', variable: 'Defect_Dojo_API_Key')]) {
+                //Import SonarQube Scan Report
                 script{
                   def currentDate = new Date().format("yyyy-MM-dd")
                   def defectDojoUrl = "http://10.0.5.69:8555/api/v2/import-scan/"  // Replace with your DefectDojo URL
@@ -45,8 +68,35 @@ pipeline {
                       -F "product_name=${productName}" \\
                       -F "engagement_name=${engagementName}" \\
                       -F "file=@${SONAR_REPORT_FILE};type=application/json" \\
-                """
-                }
+                  """
+
+                  //Import ZAP Scan Report
+                  
+                  def currentDate = new Date().format("yyyy-MM-dd")
+                  def defectDojoUrl = "http://10.0.5.69:8555/api/v2/import-scan/"  // Replace with your DefectDojo URL
+                  def productName = "Jenkins-CICD"
+                  def engagementName = "Zap-Report"  // Replace with an engagement name
+                  def descName = "Created by automated script"
+                  def scanType = "ZAP Scan"
+                  def ZAP_REPORT_FILE = ${LOCAL_PATH}              
+                
+                  sh """
+                    curl -i -v -X POST "${defectDojoUrl}" \\
+                      -H "Authorization: Token ${Defect_Dojo_API_Key}" \\
+                      -F "scan_date=${currentDate}" \\
+                      -F "scan_type=${scanType}" \\
+                      -F "verified=False" \\
+                      -F "active=True" \\
+                      -F "minimum_severity=Info" \\
+                      -F "description=${descName}" \\
+                      -F "auto_create_context=True" \\
+                      -F "deduplication_on_engagement=True" \\
+                      -F "product_name=${productName}" \\
+                      -F "engagement_name=${engagementName}" \\
+                      -F "file=@${ZAP_REPORT_FILE};type=application/json" \\
+                  """
+                  
+               }
             }
         }
     }
