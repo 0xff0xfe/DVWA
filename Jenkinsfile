@@ -72,19 +72,15 @@ pipeline {
 
                   //Import ZAP Scan Report
                   
-                  def currentDate = new Date().format("yyyy-MM-dd")
-                  def defectDojoUrl = "http://10.0.5.69:8555/api/v2/import-scan/"  // Replace with your DefectDojo URL
-                  def productName = "Jenkins-CICD"
-                  def engagementName = "Zap-Report"  // Replace with an engagement name
-                  def descName = "Created by automated script"
-                  def scanType = "ZAP Scan"
+                  def zapEngagementName = "Zap-Report"  // Replace with an engagement name
+                  def scanTypeZap = "ZAP Scan"
                   def ZAP_REPORT_FILE = ${LOCAL_PATH}              
                 
                   sh """
                     curl -i -v -X POST "${defectDojoUrl}" \\
                       -H "Authorization: Token ${Defect_Dojo_API_Key}" \\
                       -F "scan_date=${currentDate}" \\
-                      -F "scan_type=${scanType}" \\
+                      -F "scan_type=${scanTypeZap}" \\
                       -F "verified=False" \\
                       -F "active=True" \\
                       -F "minimum_severity=Info" \\
@@ -92,7 +88,7 @@ pipeline {
                       -F "auto_create_context=True" \\
                       -F "deduplication_on_engagement=True" \\
                       -F "product_name=${productName}" \\
-                      -F "engagement_name=${engagementName}" \\
+                      -F "engagement_name=${zapEngagementName}" \\
                       -F "file=@${ZAP_REPORT_FILE};type=application/json" \\
                   """
                   
