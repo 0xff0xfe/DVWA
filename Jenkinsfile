@@ -50,7 +50,7 @@ pipeline {
                   def engagementName = "LocalTesting3"  // Replace with an engagement name
                   def descName = "Created by automated script"
                   def scanType = "SonarQube API Import"
-                  def SONAR_REPORT_FILE = "/var/lib/jenkins/workspace/webapp-cicd-pipeline/sonarqube-report.json"
+                  def sonarReportFile = "/var/lib/jenkins/workspace/webapp-cicd-pipeline/sonarqube-report.json"
                   
                   sh """
                     curl -i -v -X POST "${defectDojoUrl}" \\
@@ -65,13 +65,14 @@ pipeline {
                       -F "deduplication_on_engagement=True" \\
                       -F "product_name=${productName}" \\
                       -F "engagement_name=${engagementName}" \\
-                      -F "file=@${SONAR_REPORT_FILE};type=application/json" \\
+                      -F "file=@${sonarReportFile};type=application/json" \\
                   """
 
                   //Import ZAP Scan Report
                   
                   def zapEngagementName = "Zap-Report"  // Replace with an engagement name
-                  def scanTypeZap = "ZAP Scan"          
+                  def scanTypeZap = "ZAP Scan"
+                  
                   sh """
                     curl -i -v -X POST "${defectDojoUrl}" \\
                       -H "Authorization: Token ${Defect_Dojo_API_Key}" \\
@@ -85,7 +86,7 @@ pipeline {
                       -F "deduplication_on_engagement=True" \\
                       -F "product_name=${productName}" \\
                       -F "engagement_name=${zapEngagementName}" \\
-                      -F "file=@${ZAP_REPORT_FILE};type=application/json" \\
+                      -F "file=@${ZAP_REPORT_PATH};type=application/json" \\
                   """
                   
                }
