@@ -4,7 +4,7 @@ pipeline {
         // Define ZAP remote server details
         REMOTE_SERVER = 'ubuntu@3.27.140.228'
         REMOTE_PATH = './2024-11-28-ZAP-Report-3.106.223.79.xml'
-        LOCAL_PATH = './2024-11-28-ZAP-Report-3.106.223.79.xml'
+        ZAP_REPORT_PATH = './2024-11-28-ZAP-Report-3.106.223.79.xml'
   }
   
   stages {
@@ -73,9 +73,7 @@ pipeline {
                   //Import ZAP Scan Report
                   
                   def zapEngagementName = "Zap-Report"  // Replace with an engagement name
-                  def scanTypeZap = "ZAP Scan"
-                  def ZAP_REPORT_FILE = ${LOCAL_PATH}              
-                
+                  def scanTypeZap = "ZAP Scan"          
                   sh """
                     curl -i -v -X POST "${defectDojoUrl}" \\
                       -H "Authorization: Token ${Defect_Dojo_API_Key}" \\
