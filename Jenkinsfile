@@ -39,7 +39,7 @@ pipeline {
     stage('DefectDojoPublisher') {
         steps {   
             withCredentials([sshUserPrivateKey(credentialsId: 'zap', keyFileVariable: 'ZAP_SSH_KEY')]) {
-                sh "scp -i $ZAP_SSH_KEY ubuntu@3.27.140.228:./2024-11-28-ZAP-Report-3.106.223.79.xml ./2024-11-28-ZAP-Report-3.106.223.79.xml
+                sh "scp -i $ZAP_SSH_KEY ubuntu@3.27.140.228:./2024-11-28-ZAP-Report-3.106.223.79.xml ./2024-11-28-ZAP-Report-3.106.223.79.xml"
             }
             withCredentials([string(credentialsId: 'Defect_Dojo_API_Key', variable: 'Defect_Dojo_API_Key')]) {
                 //Import SonarQube Scan Report
