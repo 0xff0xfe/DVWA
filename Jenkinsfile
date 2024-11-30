@@ -47,7 +47,7 @@ pipeline {
                   def currentDate = new Date().format("yyyy-MM-dd")
                   def defectDojoUrl = "http://10.0.5.69:8555/api/v2/import-scan/"  // Replace with your DefectDojo URL
                   def productName = "Jenkins-CICD"
-                  def engagementName = "LocalTesting3"  // Replace with an engagement name
+                  def engagementName = "SonarQube Report"  // Replace with an engagement name
                   def descName = "Created by automated script"
                   def scanType = "SonarQube API Import"
                   def sonarReportFile = "/var/lib/jenkins/workspace/webapp-cicd-pipeline/sonarqube-report.json"
