@@ -24,7 +24,7 @@ pipeline {
                 sh "curl -s -u ${SONAR_AUTH_TOKEN}: http://10.0.5.69:9000/api/issues/search?projects=DVWA-SonarQube-Scan -o ${SONAR_REPORT_FILE}"
             }
         }
-        withSonarQubeEnv('Sonarqube') {
+        withSonarQubeEnv(installationName: 'Sonarqube') {
            timeout(time: 1, unit: 'HOURS') {
                     // Parameter indicates whether to set pipeline to UNSTABLE if Quality Gate fails
                     // true = set pipeline to UNSTABLE, false = don't
