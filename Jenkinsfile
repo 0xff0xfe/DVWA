@@ -80,11 +80,20 @@ pipeline {
       steps {
         sshagent(['zap']) {
          sh 'ssh -o  StrictHostKeyChecking=no ubuntu@3.27.140.228 "docker container run -d -v $(pwd):/zap/wrk/:rw -t zaproxy/zap-weekly zap.sh -cmd -autorun /zap/wrk/FullScanDvwaAuth.yaml" || true'
+
+         exit_code =$?
+         echo "Exit Code : $exit_code"
+
+          if [[ ${exit_code} -ne 0 ]]; then
+             echo "OWASP ZAP Report has either Low/Medium/High Risk. Please check the HTML report.
+             exit 1;
+            else
+             echo "OWASP ZAP did not report any Risk"
+          fi;
         }
       }
     }
     
-
     stage('DefectDojoPublisher') {
         steps {   
             withCredentials([sshUserPrivateKey(credentialsId: 'zap', keyFileVariable: 'ZAP_SSH_KEY')]) {
