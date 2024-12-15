@@ -39,12 +39,11 @@ pipeline {
           }
         }
     }
-
+    /*
      stage('DefectDojoPublisher') {
         steps {   
             withCredentials([string(credentialsId: 'Defect_Dojo_API_Key', variable: 'Defect_Dojo_API_Key')]) {
 
-                defectDojoPublisher(artifact: 'dependency-check-report.xml', productName: 'Jenkins-CICD', scanType: 'Dependency Check Scan', engagementName: 'OWASP-Dependency Check Report', defectDojoCredentialsId: 'Defect_Dojo_API_Key', sourceCodeUrl: 'https://github.com/0xff0xfe/DVWA.git', branchTag: 'master')
        
                 //Import SonarQube Scan Report
                 script{
@@ -75,8 +74,8 @@ pipeline {
             }
         }
     }
-
-    /*
+    */
+    
     stage ('DAST') {
       steps {
         sshagent(['zap']) {
@@ -91,7 +90,11 @@ pipeline {
             withCredentials([sshUserPrivateKey(credentialsId: 'zap', keyFileVariable: 'ZAP_SSH_KEY')]) {
                 sh "scp -i $ZAP_SSH_KEY ubuntu@3.27.140.228:./2024-11-28-ZAP-Report-3.106.223.79.xml ./2024-11-28-ZAP-Report-3.106.223.79.xml"
             }
+          
             withCredentials([string(credentialsId: 'Defect_Dojo_API_Key', variable: 'Defect_Dojo_API_Key')]) {
+                //Import OWASP Depedency scan result 
+                defectDojoPublisher(artifact: 'dependency-check-report.xml', productName: 'Jenkins-CICD', scanType: 'Dependency Check Scan', engagementName: 'OWASP-Dependency Check Report', defectDojoCredentialsId: 'Defect_Dojo_API_Key', sourceCodeUrl: 'https://github.com/0xff0xfe/DVWA.git', branchTag: 'master')
+
                 //Import SonarQube Scan Report
                 script{
                   def currentDate = new Date().format("yyyy-MM-dd")
@@ -143,6 +146,5 @@ pipeline {
             }
         }
     }
-    */
   }
 }
