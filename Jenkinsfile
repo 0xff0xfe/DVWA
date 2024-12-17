@@ -88,7 +88,7 @@ pipeline {
               echo "Exit Code: $exit_code"
           
               # Check if the exit code is non-zero (indicating an error)
-              if [[ ${exit_code} -ne 0 ]]; then
+              if [ ${exit_code} -ne 0 ]; then
                   echo "OWASP ZAP Report has either Low/Medium/High Risk. Please check the HTML report."
                   exit 1
               else
@@ -103,7 +103,7 @@ pipeline {
     stage('DefectDojoPublisher') {
         steps {   
             withCredentials([sshUserPrivateKey(credentialsId: 'zap', keyFileVariable: 'ZAP_SSH_KEY')]) {
-                sh "scp -i $ZAP_SSH_KEY ubuntu@13.55.239.230:./2024-12-17-ZAP-Report-13.55.239.230.xml ./2024-12-17-ZAP-Report-13.55.239.230.xml"
+                sh "scp -i $ZAP_SSH_KEY ubuntu@13.55.239.230:./2024-12-17-ZAP-Report-3.107.203.184.xml ./2024-12-17-ZAP-Report-3.107.203.184.xml"
             }
           
             withCredentials([string(credentialsId: 'Defect_Dojo_API_Key', variable: 'Defect_Dojo_API_Key')]) {
