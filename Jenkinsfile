@@ -80,16 +80,20 @@ pipeline {
     steps {
         sshagent(['zap']) {
             sh '''
-                ssh -o StrictHostKeyChecking=no ubuntu@3.27.165.30 "docker container run -d -v $(pwd):/zap/wrk/:rw -t zaproxy/zap-weekly zap.sh -cmd -autorun /zap/wrk/FullScanDvwaAuth.yaml" || true
-                exit_code=$?
-                echo "Exit Code: $exit_code"
-
-                if [[ ${exit_code} -ne 0 ]]; then
-                    echo "OWASP ZAP Report has either Low/Medium/High Risk. Please check the HTML report."
-                    exit 1
-                else
-                    echo "OWASP ZAP did not report any Risk"
-                fi
+              # Run the Docker container in detached mode
+              container_id=$(ssh -o StrictHostKeyChecking=no ubuntu@3.27.165.30 "docker container run -d -v $(pwd):/zap/wrk/:rw -t zaproxy/zap-weekly zap.sh -cmd -autorun /zap/wrk/FullScanDvwaAuth.yaml")
+              
+              # Wait for the Docker container to finish executing
+              exit_code=$(ssh -o StrictHostKeyChecking=no ubuntu@3.27.165.30 "docker wait $container_id")
+              echo "Exit Code: $exit_code"
+          
+              # Check if the exit code is non-zero (indicating an error)
+              if [[ ${exit_code} -ne 0 ]]; then
+                  echo "OWASP ZAP Report has either Low/Medium/High Risk. Please check the HTML report."
+                  exit 1
+              else
+                  echo "OWASP ZAP did not report any Risk"
+              fi
             '''
          }
       }
