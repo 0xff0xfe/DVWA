@@ -84,7 +84,7 @@ pipeline {
               container_id=$(ssh -o StrictHostKeyChecking=no ubuntu@13.55.239.230 "docker container run -d -v $(pwd):/zap/wrk/:rw -t zaproxy/zap-weekly zap.sh -cmd -autorun /zap/wrk/FullScanDvwaAuth.yaml")
               
               # Wait for the Docker container to finish executing
-              exit_code=$(ssh -o StrictHostKeyChecking=no ubuntu@3.27.165.30 "docker wait $container_id")
+              exit_code=$(ssh -o StrictHostKeyChecking=no ubuntu@13.55.239.230 "docker wait $container_id")
               echo "Exit Code: $exit_code"
           
               # Check if the exit code is non-zero (indicating an error)
@@ -103,7 +103,7 @@ pipeline {
     stage('DefectDojoPublisher') {
         steps {   
             withCredentials([sshUserPrivateKey(credentialsId: 'zap', keyFileVariable: 'ZAP_SSH_KEY')]) {
-                sh "scp -i $ZAP_SSH_KEY ubuntu@3.27.165.30:./2024-12-15-ZAP-Report-3.27.165.30.xml ./2024-12-15-ZAP-Report-3.27.165.30.xml"
+                sh "scp -i $ZAP_SSH_KEY ubuntu@13.55.239.230:./2024-12-17-ZAP-Report-13.55.239.230.xml ./2024-12-17-ZAP-Report-13.55.239.230.xml"
             }
           
             withCredentials([string(credentialsId: 'Defect_Dojo_API_Key', variable: 'Defect_Dojo_API_Key')]) {
