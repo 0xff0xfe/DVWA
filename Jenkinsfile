@@ -103,8 +103,10 @@ pipeline {
     stage('DefectDojoPublisher') {
         steps {   
             withCredentials([sshUserPrivateKey(credentialsId: 'zap', keyFileVariable: 'ZAP_SSH_KEY')]) {
-                sh "scp -i $ZAP_SSH_KEY ubuntu@13.55.239.230:./2024-12-17-ZAP-Report-3.107.203.184.xml ./2024-12-17-ZAP-Report-3.107.203.184.xml"
+                sh "scp -i $ZAP_SSH_KEY ubuntu@13.236.0.41:./2024-12-18-ZAP-Report-3.27.71.175.xml ./2024-12-18-ZAP-Report-3.27.71.175.xml"
+                sh "scp -i $ZAP_SSH_KEY ubuntu@13.236.0.41:./2024-12-18-ZAP-Report-3.27.71.175.html ./2024-12-18-ZAP-Report-3.27.71.175.xml"
             }
+           publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: '.\\', reportFiles: '2024-12-18-ZAP-Report-3.27.71.175.html', reportName: 'HTML Report', reportTitles: '', useWrapperFileDirectly: true])
           
             withCredentials([string(credentialsId: 'Defect_Dojo_API_Key', variable: 'Defect_Dojo_API_Key')]) {
                 //Import OWASP Depedency scan result 
