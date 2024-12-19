@@ -81,7 +81,7 @@ pipeline {
         sshagent(['zap']) {
             sh '''
               # Run the Docker container in detached mode
-              container_id=$(ssh -o StrictHostKeyChecking=no ubuntu@54.252.66.185 "docker container run -d -v $(pwd):/zap/wrk/:rw -t zaproxy/zap-weekly zap.sh -cmd -autorun /zap/wrk/FullScanDvwaAuth.yaml")
+              container_id=$(ssh -o StrictHostKeyChecking=no ubuntu@54.252.66.185 "docker container run -v \$(pwd):/zap/wrk/:rw -t zaproxy/zap-weekly zap.sh -cmd -autorun /zap/wrk/FullScanDvwaAuth.yaml")
               
               # Wait for the Docker container to finish executing
               exit_code=$(ssh -o StrictHostKeyChecking=no ubuntu@54.252.66.185 "docker wait $container_id")
