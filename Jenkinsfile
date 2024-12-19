@@ -89,8 +89,9 @@ pipeline {
               withCredentials([sshUserPrivateKey(credentialsId: 'zap', keyFileVariable: 'ZAP_SSH_KEY')]) {
                 sh "scp -i $ZAP_SSH_KEY ubuntu@54.252.66.185:./2024-12-19-ZAP-Report-3.24.123.180.xml ./2024-12-18-ZAP-Report-3.24.123.180.xml"
                 sh "scp -i $ZAP_SSH_KEY ubuntu@54.252.66.185:./2024-12-19-ZAP-Report-3.24.123.180.html ./2024-12-18-ZAP-Report-3.24.123.180.xml"
-            }
-           publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: '.\\', reportFiles: '2024-12-19-ZAP-Report-3.24.123.180.html', reportName: 'HTML Report', reportTitles: '', useWrapperFileDirectly: true])
+              }
+              publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: '.\\', reportFiles: '2024-12-19-ZAP-Report-3.24.123.180.html', reportName: 'HTML Report', reportTitles: '', useWrapperFileDirectly: true])
+              
               echo "Exit Code: $exit_code"
           
               # Check if the exit code is non-zero (indicating an error)
