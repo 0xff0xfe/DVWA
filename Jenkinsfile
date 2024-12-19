@@ -86,8 +86,8 @@ pipeline {
               # Wait for the Docker container to finish executing
               exit_code=$(ssh -o StrictHostKeyChecking=no ubuntu@54.252.66.185 "docker wait $container_id")
 
-              sh "scp ubuntu@54.252.66.185:./2024-12-19-ZAP-Report-3.24.123.180.xml ./2024-12-18-ZAP-Report-3.24.123.180.xml"
-              sh "scp ubuntu@54.252.66.185:./2024-12-19-ZAP-Report-3.24.123.180.html ./2024-12-18-ZAP-Report-3.24.123.180.html"
+              scp ubuntu@54.252.66.185:./2024-12-19-ZAP-Report-3.24.123.180.xml ./2024-12-19-ZAP-Report-3.24.123.180.xml"
+              scp ubuntu@54.252.66.185:./2024-12-19-ZAP-Report-3.24.123.180.html ./2024-12-19-ZAP-Report-3.24.123.180.html"
               
               publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: '.\\', reportFiles: '2024-12-19-ZAP-Report-3.24.123.180.html', reportName: 'HTML Report', reportTitles: '', useWrapperFileDirectly: true])
               
