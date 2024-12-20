@@ -2,9 +2,9 @@ pipeline {
   agent any
   environment {
         // Define ZAP remote server details
-        REMOTE_SERVER = 'ubuntu@3.27.140.228'
-        REMOTE_PATH = './2024-11-28-ZAP-Report-3.106.223.79.xml'
-        ZAP_REPORT_PATH = './2024-11-28-ZAP-Report-3.106.223.79.xml'
+	ZAP_IP = '54.253.232.128'
+	DVWA_IP = '3.106.188.21'
+	CURRENT_DATE = ''	  
   }
   
   stages {
@@ -48,6 +48,7 @@ pipeline {
                 //Import SonarQube Scan Report
                 script{
                   def currentDate = new Date().format("yyyy-MM-dd")
+		  env.CURRENT_DATE = currentDate
                   def defectDojoUrl = "http://10.0.5.69:8555/api/v2/import-scan/"  // Replace with your DefectDojo URL
                   def productName = "Jenkins-CICD"
                   def engagementName = "SonarQube Report"  // Replace with an engagement name
@@ -81,15 +82,18 @@ pipeline {
         sshagent(['zap']) {
             sh '''
               # Run the Docker container in detached mode
-              container_id=$(ssh -o StrictHostKeyChecking=no ubuntu@54.252.66.185 "docker container run -v \$(pwd):/zap/wrk/:rw -t zaproxy/zap-weekly zap.sh -cmd -autorun /zap/wrk/FullScanDvwaAuth.yaml")
+              container_id=$(ssh -o StrictHostKeyChecking=no ubuntu@${env.ZAP_IP} "docker container run -v \$(pwd):/zap/wrk/:rw -t zaproxy/zap-weekly zap.sh -cmd -autorun /zap/wrk/FullScanDvwaAuth.yaml")
               
               # Wait for the Docker container to finish executing
-              exit_code=$(ssh -o StrictHostKeyChecking=no ubuntu@54.252.66.185 "docker wait $container_id")
+              exit_code=$(ssh -o StrictHostKeyChecking=no ubuntu@${env.ZAP_IP} "docker wait $container_id")
 
-              scp ubuntu@54.252.66.185:./2024-12-19-ZAP-Report-3.24.123.180.xml ./2024-12-19-ZAP-Report-3.24.123.180.xml"
-              scp ubuntu@54.252.66.185:./2024-12-19-ZAP-Report-3.24.123.180.html ./2024-12-19-ZAP-Report-3.24.123.180.html"
+              def ZAP_HTML_FILE = "${env.ZAP_IP}-ZAP-Report-${env.DVWA_IP}.html"
+	      def ZAP_XML_FILE = "${env.ZAP_IP}-ZAP-Report-${env.DVWA_IP}.xml"
+
+              scp ubuntu@${env.ZAP_IP}:./${ZAP_XML_FILE} ./${ZAP_XML_FILE}"
+              scp ubuntu@${env.ZAP_IP}:./${ZAP_HTML_FILE} ./${ZAP_HTML_FILE}"
               
-              publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: '.\\', reportFiles: '2024-12-19-ZAP-Report-3.24.123.180.html', reportName: 'HTML Report', reportTitles: '', useWrapperFileDirectly: true])
+              publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: '.\\', reportFiles: '${ZAP_HTML_FILE}', reportName: 'HTML Report', reportTitles: '', useWrapperFileDirectly: true])
               
               echo "Exit Code: $exit_code"
           
