@@ -85,7 +85,7 @@ pipeline {
               container_id=$(ssh -o StrictHostKeyChecking=no ubuntu@${env.ZAP_IP} "docker container run -v \$(pwd):/zap/wrk/:rw -t zaproxy/zap-weekly zap.sh -cmd -autorun /zap/wrk/FullScanDvwaAuth.yaml")
               
               # Wait for the Docker container to finish executing
-              exit_code=$(ssh -o StrictHostKeyChecking=no ubuntu@${env.ZAP_IP} "docker wait $container_id")
+              exit_code=$(ssh -o StrictHostKeyChecking=no ubuntu@${env.ZAP_IP} "docker wait ${container_id}")
 
               def ZAP_HTML_FILE = "${env.ZAP_IP}-ZAP-Report-${env.DVWA_IP}.html"
 	      def ZAP_XML_FILE = "${env.ZAP_IP}-ZAP-Report-${env.DVWA_IP}.xml"
