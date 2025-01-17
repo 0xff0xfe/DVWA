@@ -3,14 +3,14 @@ os: linux
 files:
   - source: /
     destination: /var/www/html/
-#hooks:
-#  BeforeInstall:
-#    - location: scripts/install_dependencies.sh  # Script to install necessary dependencies (e.g., Apache, PHP, MySQL)
-#      timeout: 300
-#      runas: root
-#    - location: scripts/start_server.sh          # Script to start the web server
-#      timeout: 300
-#      runas: root
+hooks:
+  BeforeInstall:
+    - location: scripts/install_dependencies.sh  # Script to install necessary dependencies (e.g., Apache, PHP, MySQL)
+      timeout: 300
+      runas: root
+    - location: scripts/start_server.sh          # Script to start the web server
+      timeout: 300
+      runas: root
 #  ApplicationStop:
 #    - location: scripts/stop_server.sh           # Script to stop any running servers before deployment
 #      timeout: 300
