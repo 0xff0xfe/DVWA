@@ -10,4 +10,4 @@ GRANT ALL PRIVILEGES ON dvwa.* TO 'dvwausr'@'127.0.0.1';
 FLUSH PRIVILEGES;
 "
 cd /var/www/dvwa
-sudo chmod -R 777 /var/www/html/dvwa/hackable/uploads
+sudo chmod -R 777 /var/www/html/dvwa/hackable/uploads/
