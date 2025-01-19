@@ -1,7 +1,15 @@
 #!/bin/bash
 # Set up DVWA
 cd /var/www/html/config
-cp config.inc.php.dist config.inc.php
+
+# Check if config.inc.php exists, and if not, copy the default config file
+if [ ! -f config.inc.php ]; then
+    cp config.inc.php.dist config.inc.php
+    echo "config.inc.php was missing, copied config.inc.php.dist to config.inc.php"
+else
+    echo "config.inc.php already exists, skipping copy."
+fi
+
 # Set up database (create dvwa database, etc.)
 sudo mysql -u root -e "
 CREATE DATABASE dvwa;
