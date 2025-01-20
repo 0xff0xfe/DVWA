@@ -209,7 +209,7 @@ function dvwaSecurityLevelGet() {
 
 
 function dvwaSecurityLevelSet( $pSecurityLevel ) {
-	if( $pSecurityLevel == 'impossible' ) {
+	if( $pSecurityLevel == 'low' ) {
 		$httponly = true;
 	}
 	else {
