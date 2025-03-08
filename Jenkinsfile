@@ -15,18 +15,12 @@ pipeline {
         sh 'cat trufflehog'
       }
     }
-
-  stage ('OWASP Dependency-Check Vulnerabilities') {
+    stage('OWASP Dependency Check') {
             steps {
-                dependencyCheck additionalArguments: ''' 
-                    -o "./" 
-                    -s "./"
-                    -f "ALL" 
-                    --prettyPrint''', odcInstallation: 'DVWA-DP-Check'
-
-                dependencyCheckPublisher pattern: 'dependency-check-report.xml'
+                dependencyCheck additionalArguments: '--scan target/', nvdCredentialsId: 'nvd-api-token', odcInstallation: 'DVWA-DP-Check'
+                    dependencyCheckPublisher pattern: '**/dependency-report.xml'"
             }
-      }  
+        }
 
     stage('SonarQube analysis') {
       steps {
