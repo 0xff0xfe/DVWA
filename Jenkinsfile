@@ -12,7 +12,7 @@ pipeline {
       steps {
         sh 'rm trufflehog || true'
         sh 'docker run gesellix/trufflehog --entrop=NO --regex --json https://github.com/0xff0xfe/DVWA.git > trufflehog'
-        sh 'cat trufflehog | grep -oE "\"stringsFound\":.[^\"]*\"" | sed -e "s/,\\\".*//" -e "s/}//" | sed "s/\"stringsFound\"://" | grep -o "\".*\"" | awk -F "," \'{ for(i=1;i<=NF;i++) print $i }\''
+        sh 'cat trufflehog | grep -oE "stringsFound:.*" | sed -e 's/stringsFound://' -e 's/,".*//' -e 's/}//''
       }
     }
     stage('OWASP Dependency Check') {
