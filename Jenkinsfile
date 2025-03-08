@@ -11,8 +11,8 @@ pipeline {
     stage ('Check-Git-Secrets') {
       steps {
         sh 'rm trufflehog || true'
-        sh 'docker run gesellix/trufflehog --json https://github.com/0xff0xfe/DVWA.git > trufflehog'
-        sh 'cat trufflehog'
+        sh 'docker run gesellix/trufflehog --entrop=NO --regex --json https://github.com/0xff0xfe/DVWA.git > trufflehog'
+        sh 'cat trufflehog | grep -oE "\"stringsFound\"\:.[.\"]}"|sed -e "s/,\".]//" -e "s/}//"|sed "s/\"stringsFound\"://"|grep -o "\".\""|awk -F "," '{ for(i=1;i<=NF;i++) print $i}''
       }
     }
     stage('OWASP Dependency Check') {
