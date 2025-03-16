@@ -20,9 +20,9 @@ pipeline {
     stage('Software Composition Analysis') {
       steps {
         script {
-            sh 'composer audit --format=composer-audit.json'
+            sh 'composer audit --format=.json'
 
-            archiveArtifacts artifacts: 'composer-audit.json', onlyIfSuccessful: true
+           
         }
       }
     }
