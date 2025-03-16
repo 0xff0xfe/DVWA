@@ -20,7 +20,7 @@ pipeline {
     stage('Software Composition Analysis') {
       steps {
         script {
-            sh 'composer audit --format=.json'
+            sh 'composer audit --format json'
 
            
         }
