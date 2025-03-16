@@ -19,9 +19,9 @@ pipeline {
     }
     stage('Software Composition Analysis') {
       steps {
-        script {
-            composerSecurityCheck failOnError: true
-        }
+        
+        composerSecurityCheck failOnError: true
+        
       }
     }
     /*  
