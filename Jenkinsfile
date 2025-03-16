@@ -20,8 +20,7 @@ pipeline {
     stage('Security Audit') {
       steps {
         script {
-            sh 'composer install --no-interaction'
-            sh 'composer security-audit'
+            sh 'composer audit'
         }
       }
     }
