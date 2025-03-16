@@ -17,6 +17,15 @@ pipeline {
         archiveArtifacts artifacts: 'trufflehog.json', onlyIfSuccessful: true
       }
     }
+    stage('Security Audit') {
+      steps {
+        script {
+            sh 'composer install --no-interaction'
+            sh 'composer security-audit'
+        }
+      }
+    }
+      
     stage('OWASP Dependency Check') {
             steps {
                 dependencyCheck additionalArguments: '--scan ./', nvdCredentialsId: 'nvd-api-token', odcInstallation: 'DVWA-DP-Check'
