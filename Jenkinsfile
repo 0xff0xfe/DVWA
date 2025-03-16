@@ -17,10 +17,10 @@ pipeline {
         archiveArtifacts artifacts: 'trufflehog.json', onlyIfSuccessful: true
       }
     }
-    stage('Security Audit') {
+    stage('Software Composition Analysis') {
       steps {
         script {
-            sh 'composer audit'
+            composerSecurityCheck failOnError: true
         }
       }
     }
