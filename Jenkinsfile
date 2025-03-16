@@ -19,9 +19,9 @@ pipeline {
     }
     stage('Software Composition Analysis') {
       steps {
-        
-        composerSecurityCheck failOnError: true
-        
+        script {
+            sh 'composer security-audit --format=.json'
+        }
       }
     }
     /*  
