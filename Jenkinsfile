@@ -32,6 +32,37 @@ pipeline {
         steps {
             dependencyCheck additionalArguments: '--scan ./ --enableExperimental', nvdCredentialsId: 'nvd-api-token', odcInstallation: 'DVWA-DP-Check'
                 dependencyCheckPublisher pattern: 'dependency-check-report.xml'
+
+             withCredentials([string(credentialsId: 'Defect_Dojo_API_Key', variable: 'Defect_Dojo_API_Key')]) {
+
+       
+                //Import SonarQube Scan Report
+                script{
+                  def currentDate = new Date().format("yyyy-MM-dd")
+		  env.CURRENT_DATE = currentDate
+                  def defectDojoUrl = "http://10.0.5.69:8555/api/v2/reimport-scan/"  // Replace with your DefectDojo URL
+                  def productName = "Jenkins-CICD"
+                  def engagementName = "Owasp DependencyCheck"  // Replace with an engagement name
+                  def descName = "Created by automated script"
+                  def scanType = "Dependency Check Scan"
+                  def sonarReportFile = "/var/lib/jenkins/workspace/webapp-cicd-pipeline/dependency-check-report.xml"
+                  
+                  sh """
+                    curl -i -v -X POST "${defectDojoUrl}" \\
+                      -H "Authorization: Token ${Defect_Dojo_API_Key}" \\
+                      -F "scan_date=${currentDate}" \\
+                      -F "scan_type=${scanType}" \\
+                      -F "verified=False" \\
+                      -F "active=True" \\
+                      -F "minimum_severity=Info" \\
+                      -F "description=${descName}" \\
+                      -F "auto_create_context=True" \\
+                      -F "deduplication_on_engagement=True" \\
+                      -F "product_name=${productName}" \\
+                      -F "engagement_name=${engagementName}" \\
+                      -F "file=@${sonarReportFile};type=application/json" \\
+                  """
+               }
         }
     }
    
