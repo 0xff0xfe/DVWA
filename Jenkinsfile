@@ -32,6 +32,7 @@ pipeline {
         steps {
             dependencyCheck additionalArguments: '--scan ./ --enableExperimental', nvdCredentialsId: 'nvd-api-token', odcInstallation: 'DVWA-DP-Check'
                 dependencyCheckPublisher pattern: 'dependency-check-report.xml'
+              
 
              withCredentials([string(credentialsId: 'Defect_Dojo_API_Key', variable: 'Defect_Dojo_API_Key')]) {
 
@@ -63,6 +64,7 @@ pipeline {
                       -F "file=@${sonarReportFile};type=application/json" \\
                   """
                }
+            }
         }
     }
    
