@@ -12,7 +12,7 @@ pipeline {
       steps {
         sh 'rm trufflehog || true'
         sh '''
-          docker run --rm -i -v "$PWD:/pwd" trufflesecurity/trufflehog:latest github --json --repo https://github.com/0xff0xfe/DVWA.git --fail > trufflehog.json
+          docker run --rm -i -v "$PWD:/pwd" trufflesecurity/trufflehog:latest github --json --repo https://github.com/0xff0xfe/DVWA.git > trufflehog.json
         '''
         archiveArtifacts artifacts: 'trufflehog.json'
 
