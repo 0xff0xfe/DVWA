@@ -14,7 +14,7 @@ pipeline {
         sh '''
           docker run --rm -i -v "$PWD:/pwd" trufflesecurity/trufflehog:latest github --json --repo https://github.com/0xff0xfe/DVWA.git --fail > trufflehog.json
         '''
-        archiveArtifacts artifacts: 'trufflehog.json', onlyIfSuccessful: true
+        archiveArtifacts artifacts: 'trufflehog.json'
 
         withCredentials([string(credentialsId: 'Defect_Dojo_API_Key', variable: 'Defect_Dojo_API_Key')]) {
 
