@@ -1,9 +1,10 @@
 pipeline {
   agent any
   environment {
-        // Define ZAP remote server details
-	ZAP_IP = '13.54.74.193'
-	DVWA_IP = '52.62.186.46'
+  
+  // Define ZAP remote server details
+	ZAP_IP = '3.27.162.226'
+	DVWA_IP = '3.106.222.244'
 	CURRENT_DATE = ''	  
   }
   
@@ -130,7 +131,7 @@ pipeline {
               else
                   echo "OWASP ZAP did not report any Risk"
               fi
-              
+
               """
             
          }
