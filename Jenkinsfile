@@ -2,8 +2,8 @@ pipeline {
   agent any
   environment {
         // Define ZAP remote server details
-	ZAP_IP = '54.253.232.128'
-	DVWA_IP = '3.106.188.21'
+	ZAP_IP = '13.54.74.193'
+	DVWA_IP = '52.62.186.46'
 	CURRENT_DATE = ''	  
   }
   
@@ -49,17 +49,7 @@ pipeline {
             }
       }
     }
-    /* 
-    stage('Software Composition Analysis') {
-      steps {
-        script {
-            sh 'composer audit --format json > composer-audit.json'
-
-           
-        }
-      }
-    }
-    */
+    
     stage('OWASP Dependency Check') {
         steps {
             dependencyCheck additionalArguments: '--scan ./ --enableExperimental', nvdCredentialsId: 'nvd-api-token', odcInstallation: 'DVWA-DP-Check'
@@ -111,48 +101,12 @@ pipeline {
           }
         }
     }
-    /*
-     stage('DefectDojoPublisher') {
-        steps {   
-            withCredentials([string(credentialsId: 'Defect_Dojo_API_Key', variable: 'Defect_Dojo_API_Key')]) {
-
-       
-                //Import SonarQube Scan Report
-                script{
-                  def currentDate = new Date().format("yyyy-MM-dd")
-		  env.CURRENT_DATE = currentDate
-                  def defectDojoUrl = "http://10.0.5.69:8555/api/v2/import-scan/"  // Replace with your DefectDojo URL
-                  def productName = "Jenkins-CICD"
-                  def engagementName = "SonarQube Report"  // Replace with an engagement name
-                  def descName = "Created by automated script"
-                  def scanType = "SonarQube API Import"
-                  def sonarReportFile = "/var/lib/jenkins/workspace/webapp-cicd-pipeline/sonarqube-report.json"
-                  
-                  sh """
-                    curl -i -v -X POST "${defectDojoUrl}" \\
-                      -H "Authorization: Token ${Defect_Dojo_API_Key}" \\
-                      -F "scan_date=${currentDate}" \\
-                      -F "scan_type=${scanType}" \\
-                      -F "verified=False" \\
-                      -F "active=True" \\
-                      -F "minimum_severity=Info" \\
-                      -F "description=${descName}" \\
-                      -F "auto_create_context=True" \\
-                      -F "deduplication_on_engagement=True" \\
-                      -F "product_name=${productName}" \\
-                      -F "engagement_name=${engagementName}" \\
-                      -F "file=@${sonarReportFile};type=application/json" \\
-                  """
-               }
-            }
-        }
-    }
-    */
+   
     
     stage('DAST') {
     steps {
         sshagent(['zap']) {
-            sh '''
+            sh 
               # Run the Docker container in detached mode
               container_id=$(ssh -o StrictHostKeyChecking=no ubuntu@${env.ZAP_IP} "docker container run -v \$(pwd):/zap/wrk/:rw -t zaproxy/zap-weekly zap.sh -cmd -autorun /zap/wrk/FullScanDvwaAuth.yaml")
               
@@ -176,47 +130,8 @@ pipeline {
               else
                   echo "OWASP ZAP did not report any Risk"
               fi
-            '''
-         }
-      }
-   } 
 
-    
-    stage('DefectDojoPublisher') {
-        steps {   
-            
-          
-            withCredentials([string(credentialsId: 'Defect_Dojo_API_Key', variable: 'Defect_Dojo_API_Key')]) {
-                //Import OWASP Depedency scan result 
-                defectDojoPublisher(artifact: 'dependency-check-report.xml', productName: 'Jenkins-CICD', scanType: 'Dependency Check Scan', engagementName: 'OWASP-Dependency Check Report', defectDojoCredentialsId: 'Defect_Dojo_API_Key', sourceCodeUrl: 'https://github.com/0xff0xfe/DVWA.git', branchTag: 'master')
-
-                //Import SonarQube Scan Report
-                script{
-                  def currentDate = new Date().format("yyyy-MM-dd")
-                  def defectDojoUrl = "http://10.0.5.69:8555/api/v2/import-scan/"  // Replace with your DefectDojo URL
-                  def productName = "Jenkins-CICD"
-                  def engagementName = "SonarQube Report"  // Replace with an engagement name
-                  def descName = "Created by automated script"
-                  def scanType = "SonarQube API Import"
-                  def sonarReportFile = "/var/lib/jenkins/workspace/webapp-cicd-pipeline/sonarqube-report.json"
-                  
-                  sh """
-                    curl -i -v -X POST "${defectDojoUrl}" \\
-                      -H "Authorization: Token ${Defect_Dojo_API_Key}" \\
-                      -F "scan_date=${currentDate}" \\
-                      -F "scan_type=${scanType}" \\
-                      -F "verified=False" \\
-                      -F "active=True" \\
-                      -F "minimum_severity=Info" \\
-                      -F "description=${descName}" \\
-                      -F "auto_create_context=True" \\
-                      -F "deduplication_on_engagement=True" \\
-                      -F "product_name=${productName}" \\
-                      -F "engagement_name=${engagementName}" \\
-                      -F "file=@${sonarReportFile};type=application/json" \\
-                  """
-
-                  //Import ZAP Scan Report
+              //Import ZAP Scan Report
                   
                   def zapEngagementName = "Zap-Report"  // Replace with an engagement name
                   def scanTypeZap = "ZAP Scan"
@@ -236,11 +151,13 @@ pipeline {
                       -F "engagement_name=${zapEngagementName}" \\
                       -F "file=@${ZAP_REPORT_PATH};type=application/json" \\
                   """
-                  
-               }
-            }
-        }
-    }
+            
+         }
+      }
+   } 
+
+    
+  
     stage('Prompt to PROD?'){
 	    steps{
 		      timeout(time: 2, unit: 'DAYS'){
