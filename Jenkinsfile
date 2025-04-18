@@ -107,13 +107,13 @@ pipeline {
     stage('DAST') {
     steps {
         sshagent(['zap']) {
-            sh 
-              //Run the Docker container in detached mode
+            sh '''
+              # Run the Docker container in detached mode
               container_id=$(ssh -o StrictHostKeyChecking=no ubuntu@${env.ZAP_IP} "docker container run -v \$(pwd):/zap/wrk/:rw -t zaproxy/zap-weekly zap.sh -cmd -autorun /zap/wrk/FullScanDvwaAuth.yaml")
               
-              //Wait for the Docker container to finish executing
+              # Wait for the Docker container to finish executing
               exit_code=$(ssh -o StrictHostKeyChecking=no ubuntu@${env.ZAP_IP} "docker wait ${container_id}")
-
+            
               def ZAP_HTML_FILE = "${env.ZAP_IP}-ZAP-Report-${env.DVWA_IP}.html"
 	            def ZAP_XML_FILE = "${env.ZAP_IP}-ZAP-Report-${env.DVWA_IP}.xml"
 
@@ -130,7 +130,8 @@ pipeline {
                   exit 1
               else
                   echo "OWASP ZAP did not report any Risk"
-              fi            
+              fi          
+              '''  
          }
       }
    } 
