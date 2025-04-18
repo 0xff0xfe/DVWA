@@ -106,7 +106,7 @@ pipeline {
     stage('DAST') {
     steps {
         sshagent(['zap']) {
-            sh 
+            sh """
               //Run the Docker container in detached mode
               container_id=$(ssh -o StrictHostKeyChecking=no ubuntu@${env.ZAP_IP} "docker container run -v \$(pwd):/zap/wrk/:rw -t zaproxy/zap-weekly zap.sh -cmd -autorun /zap/wrk/FullScanDvwaAuth.yaml")
               
@@ -130,27 +130,8 @@ pipeline {
               else
                   echo "OWASP ZAP did not report any Risk"
               fi
-
-              //Import ZAP Scan Report
-                  
-                  def zapEngagementName = "Zap-Report"  // Replace with an engagement name
-                  def scanTypeZap = "ZAP Scan"
-                  
-                  sh """
-                    curl -i -v -X POST "${defectDojoUrl}" \\
-                      -H "Authorization: Token ${Defect_Dojo_API_Key}" \\
-                      -F "scan_date=${currentDate}" \\
-                      -F "scan_type=${scanTypeZap}" \\
-                      -F "verified=False" \\
-                      -F "active=True" \\
-                      -F "minimum_severity=Info" \\
-                      -F "description=${descName}" \\
-                      -F "auto_create_context=True" \\
-                      -F "deduplication_on_engagement=True" \\
-                      -F "product_name=${productName}" \\
-                      -F "engagement_name=${zapEngagementName}" \\
-                      -F "file=@${ZAP_REPORT_PATH};type=application/json" \\
-                  """
+              
+              """
             
          }
       }
