@@ -3,8 +3,8 @@ pipeline {
   environment {
   
   // Define ZAP remote server details
-	ZAP_IP = '3.27.162.226'
-	DVWA_IP = '3.106.222.244'
+	ZAP_IP = '54.206.117.228'
+	DVWA_IP = '3.107.194.18'
 	CURRENT_DATE = ''	  
   }
   
