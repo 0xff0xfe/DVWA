@@ -104,37 +104,57 @@ pipeline {
     }
    
     
-    stage('DAST') {
+   stage('DAST') {
     steps {
         sshagent(['zap']) {
-            sh '''
+            sh '''#!/bin/bash
               # Run the Docker container in detached mode
-              container_id=$(ssh -o StrictHostKeyChecking=no ubuntu@${env.ZAP_IP} "docker container run -v \$(pwd):/zap/wrk/:rw -t zaproxy/zap-weekly zap.sh -cmd -autorun /zap/wrk/FullScanDvwaAuth.yaml")
+              container_id=$(ssh -o StrictHostKeyChecking=no ubuntu@${ZAP_IP} "docker container run -v \$(pwd):/zap/wrk/:rw -t zaproxy/zap-weekly zap.sh -cmd -autorun /zap/wrk/FullScanDvwaAuth.yaml")
               
               # Wait for the Docker container to finish executing
-              exit_code=$(ssh -o StrictHostKeyChecking=no ubuntu@${env.ZAP_IP} "docker wait ${container_id}")
-            
-              def ZAP_HTML_FILE = "${env.ZAP_IP}-ZAP-Report-${env.DVWA_IP}.html"
-	            def ZAP_XML_FILE = "${env.ZAP_IP}-ZAP-Report-${env.DVWA_IP}.xml"
+              exit_code=$(ssh -o StrictHostKeyChecking=no ubuntu@${ZAP_IP} "docker wait ${container_id}")
+              
+              # Define report file names
+              ZAP_HTML_FILE="${ZAP_IP}-ZAP-Report-${DVWA_IP}.html"
+              ZAP_XML_FILE="${ZAP_IP}-ZAP-Report-${DVWA_IP}.xml"
 
-              scp ubuntu@${env.ZAP_IP}:./${ZAP_XML_FILE} ./${ZAP_XML_FILE}"
-              scp ubuntu@${env.ZAP_IP}:./${ZAP_HTML_FILE} ./${ZAP_HTML_FILE}"
-              
-              publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: '.\\', reportFiles: '${ZAP_HTML_FILE}', reportName: 'HTML Report', reportTitles: '', useWrapperFileDirectly: true])
-              
-              echo "Exit Code: $exit_code"
-          
-              # Check if the exit code is non-zero (indicating an error)
-              if [ ${exit_code} -ne 0 ]; then
-                  echo "OWASP ZAP Report has either Low/Medium/High Risk. Please check the HTML report."
-                  exit 1
-              else
-                  echo "OWASP ZAP did not report any Risk"
-              fi          
-              '''  
-         }
-      }
-   } 
+              # Download the reports
+              scp ubuntu@${ZAP_IP}:./${ZAP_XML_FILE} ./${ZAP_XML_FILE}
+              scp ubuntu@${ZAP_IP}:./${ZAP_HTML_FILE} ./${ZAP_HTML_FILE}
+
+              echo "Exit Code: ${exit_code}"
+
+              # Save exit code for Groovy to use later if needed
+              echo "${exit_code}" > exit_code.txt
+            '''
+            
+            // Now in Groovy, after shell execution
+            script {
+                def exitCode = readFile('exit_code.txt').trim()
+                def zapHtmlFile = "${env.ZAP_IP}-ZAP-Report-${env.DVWA_IP}.html"
+
+                publishHTML([
+                  allowMissing: false,
+                  alwaysLinkToLastBuild: false,
+                  keepAll: false,
+                  reportDir: '.',
+                  reportFiles: zapHtmlFile,
+                  reportName: 'HTML Report',
+                  reportTitles: '',
+                  useWrapperFileDirectly: true
+                ])
+
+                echo "Exit Code: ${exitCode}"
+
+                if (exitCode != '0') {
+                    error("OWASP ZAP Report has either Low/Medium/High Risk. Please check the HTML report.")
+                } else {
+                    echo "OWASP ZAP did not report any Risk"
+                }
+            }
+        }
+    }
+}
 
     
   
