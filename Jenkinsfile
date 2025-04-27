@@ -20,7 +20,7 @@ pipeline {
         withCredentials([string(credentialsId: 'Defect_Dojo_API_Key', variable: 'Defect_Dojo_API_Key')]) {
 
        
-                //Import SonarQube Scan Report
+                //Import Trufflehog scan Report
                 script{
                   def currentDate = new Date().format("yyyy-MM-dd")
 		  env.CURRENT_DATE = currentDate
@@ -60,7 +60,7 @@ pipeline {
              withCredentials([string(credentialsId: 'Defect_Dojo_API_Key', variable: 'Defect_Dojo_API_Key')]) {
 
        
-                //Import SonarQube Scan Report
+                //Import Dependency Check Report
                 script{
                   def currentDate = new Date().format("yyyy-MM-dd")
 		  env.CURRENT_DATE = currentDate
@@ -100,6 +100,38 @@ pipeline {
               sh "curl -s -u ${SONAR_AUTH_TOKEN}: http://10.0.5.69:9000/api/issues/search?projects=DVWA-SonarQube-Scan -o ${SONAR_REPORT_FILE}"
             }
           }
+
+          withCredentials([string(credentialsId: 'Defect_Dojo_API_Key', variable: 'Defect_Dojo_API_Key')]) {
+
+       
+                //Import Sonarqube Scan Report
+                script{
+                  def currentDate = new Date().format("yyyy-MM-dd")
+		  env.CURRENT_DATE = currentDate
+                  def defectDojoUrl = "http://10.0.5.69:8555/api/v2/reimport-scan/"  // Replace with your DefectDojo URL
+                  def productName = "Jenkins-CICD"
+                  def engagementName = "SonarQube Scan"  // Replace with an engagement name
+                  def descName = "Created by automated script"
+                  def scanType = "SonarQube Scan"
+                  def sonarReportFile = "/var/lib/jenkins/workspace/webapp-cicd-pipeline/sonarqube-report.json"
+                  
+                  sh """
+                    curl -i -v -X POST "${defectDojoUrl}" \\
+                      -H "Authorization: Token ${Defect_Dojo_API_Key}" \\
+                      -F "scan_date=${currentDate}" \\
+                      -F "scan_type=${scanType}" \\
+                      -F "verified=False" \\
+                      -F "active=True" \\
+                      -F "minimum_severity=Info" \\
+                      -F "description=${descName}" \\
+                      -F "auto_create_context=True" \\
+                      -F "deduplication_on_engagement=True" \\
+                      -F "product_name=${productName}" \\
+                      -F "engagement_name=${engagementName}" \\
+                      -F "file=@${sonarReportFile};type=application/json" \\
+                  """
+               }
+            }
         }
     }
    
